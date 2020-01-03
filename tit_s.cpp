@@ -39,9 +39,15 @@ int main(int argc, char** argv) {
                     if(!fs::exists(tmp))
                     {
                         fs::create_directory(tmp);
-                        fs::path ne = tmp;
-                        ne.append("00.png");
-                        fs::copy_file(p,ne);
+                        fs::path ne0 = tmp;
+                        fs::path ne1 = tmp;
+                        fs::path ne2 = tmp;
+                        ne0.append("00.png");
+                        ne1.append("01.png");
+                        ne2.append("02.png");
+                        fs::copy_file(p,ne0);
+                        fs::copy_file(p,ne1);
+                        fs::copy_file(p,ne2);
                     }
                 }   
             }
