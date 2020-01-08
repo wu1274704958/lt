@@ -13,4 +13,5 @@ if(MINI_TEST_FOUND)
     include_directories(${MINI_TEST_INCLUDE_DIR})
 endif()
 add_executable(tit_s tit_s.cpp)
+add_executable(merge_val merge_val.cpp)
 
