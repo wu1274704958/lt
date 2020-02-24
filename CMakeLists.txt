@@ -16,4 +16,5 @@ add_executable(tit_s tit_s.cpp)
 add_executable(merge_val merge_val.cpp)
 add_executable(mv_r mv_r.cpp)
 add_executable(up_bv up_bv.cpp)
+add_executable(modify_json modify_json.cpp)
 
