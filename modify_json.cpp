@@ -14,6 +14,13 @@ int main(int argc, char** argv)
     fs::path f(argv[1]);
     std::string k = argv[2],v = argv[3];
 
+    char type = 'i';
+    if(argc >= 5)
+    {
+        type = argv[4][0];
+    }
+        
+
     if(!fs::exists(f))
     {
         std::cout << "bad file path!!!" <<std::endl; 
@@ -32,7 +39,10 @@ int main(int argc, char** argv)
     
     if(json.has_key(k))
     {
-        json.put(k,wws::parser<int>(v));
+        if(type == 's')
+            json.put(k,v);
+        else
+            json.put(k,wws::parser<int>(v));
 
         std::string ou = json.to_string();
 
