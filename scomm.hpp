@@ -77,3 +77,21 @@ int64_t get_mothed_prologue(std::vector<token::Token>& ts,std::string mothed,boo
     }
     return -1;
 }
+
+std::string get_args_str(std::vector<token::Token>& ts,int idx)
+{
+    return "";
+}
+
+void rm_method(std::vector<token::Token>& ts,std::string name,std::string args)
+{
+    for(int i = 0;i < ts.size();++i)
+    {
+        auto& it = ts[i];
+        
+        if(it.per == '.' && it.body == "method" && ts[i + 2].body == name && get_args_str(ts,i + 3) == args)
+        {
+            
+        }
+    }
+}
