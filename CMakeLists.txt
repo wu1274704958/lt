@@ -20,4 +20,5 @@ add_executable(modify_json modify_json.cpp)
 #onRPR onRequestPermissionsResult
 add_executable(link_onRPR link_onRPR.cpp)
 add_executable(swap_f swap_f.cpp)
+add_executable(link_onABC link_onABC.cpp)
 
