@@ -8,10 +8,17 @@ endif()
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/cmake)
 
 find_package(MINI_TEST)
+find_package(ZLIB)
 
 if(MINI_TEST_FOUND)
     include_directories(${MINI_TEST_INCLUDE_DIR} ${CMAKE_SOURCE_DIR})
 endif()
+
+if(ZLIB_FOUND)
+    include_directories(${ZLIB_INCLUDE_DIR})
+    link_libraries(${ZLIB_LIBRARY})
+endif()
+
 add_executable(tit_s tit_s.cpp)
 add_executable(merge_val merge_val.cpp)
 add_executable(mv_r mv_r.cpp)
@@ -22,4 +29,6 @@ add_executable(link_onRPR link_onRPR.cpp)
 add_executable(swap_f swap_f.cpp)
 add_executable(link_onABC link_onABC.cpp)
 add_executable(link_onBP link_onBP.cpp)
+add_executable(test test.cpp)
+add_executable(add_n_v2 add_n_v2.cpp)
 
