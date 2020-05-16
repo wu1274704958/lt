@@ -70,12 +70,12 @@ void fill_aid_need(vector<string>& v,int aid)
     std::string prefix("cq");
     prefix += wws::to_string(aid);
     prefix += "/";
-    v.push_back(prefix + "ui_android.dat");
-    v.push_back(prefix + "res.dat");
-    v.push_back(prefix + "ui_xml.dat");
-    v.push_back(prefix + "ui_ios.dat");
-    v.push_back(prefix + "WebMain.swf");
-    v.push_back(prefix + "ui_xml_ios.dat");
+    v.push_back(prefix + "ui_android.dat"   );
+    v.push_back(prefix + "res.dat"          );
+    v.push_back(prefix + "ui_xml.dat"       );
+    v.push_back(prefix + "ui_ios.dat"       );
+    v.push_back(prefix + "WebMain.swf"      );
+    v.push_back(prefix + "ui_xml_ios.dat"   );
 }
 
 void fill_assets_dir(vector<string>& v,fs::path& root)
