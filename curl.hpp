@@ -12,8 +12,10 @@ void download(std::string cdn,std::string src_name,std::filesystem::path p)
 {
     auto save = p / src_name;
     auto sp = save.parent_path();
-    if(!std::filesystem::exists(sp))
-        std::filesystem::create_directory(sp);
+    
+        if(!std::filesystem::exists(sp))
+            std::filesystem::create_directories(sp);
+
     std::string cmd("curl ");
     cmd += "-o ";
     cmd += std::filesystem::absolute(save).generic_string();
