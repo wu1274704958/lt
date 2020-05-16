@@ -4,11 +4,11 @@
 #include <dbg.hpp>
 #include "FindPath.hpp"
 #include <fileop.hpp>
+#include "curl.hpp"
 
 namespace fs = std::filesystem;
 using namespace std;
 
-void download(string cdn,string name,fs::path p);
 
 int main(int argc,char **argv)
 {
@@ -34,21 +34,4 @@ int main(int argc,char **argv)
     download(cdn,cq + "/WebMain.swf"   ,out_path);
     download(cdn,cq + "/ui_xml_ios.dat",out_path);
     return 0;
-}
-
-void download(string cdn,string src_name,fs::path p)
-{
-    auto save = p / src_name;
-    auto sp = save.parent_path();
-    if(!fs::exists(sp))
-        fs::create_directory(sp);
-    std::string cmd("curl ");
-    cmd += "-o ";
-    cmd += fs::absolute(save).generic_string();
-    cmd += " ";
-    cmd += cdn;
-    cmd += '/';
-    cmd += src_name;
-    dbg(cmd);
-    system(cmd.c_str());
 }

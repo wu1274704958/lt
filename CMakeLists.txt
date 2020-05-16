@@ -39,4 +39,5 @@ add_executable(test test.cpp)
 add_executable(add_n_v2 add_n_v2.cpp)
 add_executable(gen_n_v2 gen_n_v2.cpp)
 add_executable(down_for_aid down_for_aid.cpp)
+add_executable(down_v1v2 down_v1v2.cpp)
 
