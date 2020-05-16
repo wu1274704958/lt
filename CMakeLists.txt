@@ -9,6 +9,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/cmake)
 
 find_package(MINI_TEST)
 find_package(ZLIB)
+find_package(CS)
 
 if(MINI_TEST_FOUND)
     include_directories(${MINI_TEST_INCLUDE_DIR} ${CMAKE_SOURCE_DIR})
@@ -17,6 +18,11 @@ endif()
 if(ZLIB_FOUND)
     include_directories(${ZLIB_INCLUDE_DIR})
     link_libraries(${ZLIB_LIBRARY})
+endif()
+
+if(CHAT_SERVER_FOUND)
+    message("CHAT_SERVER_INCLUDE_DIR = ${CHAT_SERVER_INCLUDE_DIR}")
+    include_directories(${CHAT_SERVER_INCLUDE_DIR})
 endif()
 
 add_executable(tit_s tit_s.cpp)
@@ -31,4 +37,5 @@ add_executable(link_onABC link_onABC.cpp)
 add_executable(link_onBP link_onBP.cpp)
 add_executable(test test.cpp)
 add_executable(add_n_v2 add_n_v2.cpp)
+add_executable(gen_n_v2 gen_n_v2.cpp)
 
