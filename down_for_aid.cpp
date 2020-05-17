@@ -27,11 +27,25 @@ int main(int argc,char **argv)
     string cq = "cq";
     cq += wws::to_string(aid);
 
-    download(cdn,cq + "/ui_android.dat",out_path);
-    download(cdn,cq + "/res.dat"       ,out_path);
-    download(cdn,cq + "/ui_xml.dat"    ,out_path);
-    download(cdn,cq + "/ui_ios.dat"    ,out_path);
-    download(cdn,cq + "/WebMain.swf"   ,out_path);
-    download(cdn,cq + "/ui_xml_ios.dat",out_path);
+    vector<string> ns;
+    ns.push_back(cq + "/ui_android.dat");
+    ns.push_back(cq + "/res.dat"       );
+    ns.push_back(cq + "/ui_xml.dat"    );
+    ns.push_back(cq + "/ui_ios.dat"    );
+    ns.push_back(cq + "/WebMain.swf"   );
+    ns.push_back(cq + "/ui_xml_ios.dat");
+
+    wws::thread_pool tp(6);
+    
+    for(auto& n: ns)
+    {
+        tp.add_task([cdn,&n,&out_path](){
+            download(cdn,n,out_path);
+        });
+    }
+
+    while(tp.has_not_dispatched()){ this_thread::sleep_for(std::chrono::milliseconds(2));}
+    tp.wait_all();
+
     return 0;
 }
