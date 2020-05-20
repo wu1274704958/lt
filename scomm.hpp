@@ -95,3 +95,49 @@ void rm_method(std::vector<token::Token>& ts,std::string name,std::string args)
         }
     }
 }
+
+void replace(std::filesystem::path& file,std::string f,std::string r)
+{
+    if(std::filesystem::exists(file))
+    {
+        auto file_path = file.generic_string();
+        std::string str;
+        {
+            std::ifstream istr(file_path,std::ios::binary);
+            dbg("read b");
+            while(!istr.eof())
+            {
+                auto c = istr.get();
+                if(c != 255 && c != -1)
+                    str += c;
+            }
+            dbg("read e");
+        }
+        for(int i = 0;i < str.size();++i)
+        {
+            if(str[i] == f[0] && i + f.size() - 1 < str.size())
+            {
+                int j = 1;
+                bool flag = true;
+                for(;j < f.size();++j)
+                {
+                    if(str[i + j] != f[j])
+                    {
+                        flag = false;
+                        break; 
+                    }
+                }
+                if(flag)
+                    str.replace(i,f.size(),r);
+            }
+        }
+        if(!str.empty())
+        {
+            std::ofstream ostr(file_path,std::ios::binary);
+            dbg("write b");
+            ostr << str;
+            ostr.flush();
+            dbg("write e");
+        }
+    }
+}
