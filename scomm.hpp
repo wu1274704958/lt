@@ -3,6 +3,8 @@
 #include <string>
 #include <token_stream.hpp>
 #include <dbg.hpp>
+#include <strstream>
+#include <serialization.hpp>
 
 std::string get_pkg_name(std::vector<token::Token>& ts)
 {
@@ -78,9 +80,34 @@ int64_t get_mothed_prologue(std::vector<token::Token>& ts,std::string mothed,boo
     return -1;
 }
 
-std::string get_args_str(std::vector<token::Token>& ts,int idx)
+std::tuple<std::string,int64_t> get_args_str(std::vector<token::Token>& ts,int b)
 {
-    return "";
+    std::string args_s;
+    while (ts[b].per != '(') { ++b; }
+    while (ts[b].back != ')')
+    {
+        args_s += ts[b].to_string();
+        ++b;
+    }
+    args_s += ts[b].to_string();
+    return { args_s,b };
+}
+
+std::tuple<std::string, int64_t> get_class_str(std::vector<token::Token>& ts, int b)
+{
+    std::string args_s;
+    while (ts[b].body.empty() || ts[b].body[0] != 'L') { ++b; }
+    args_s += ts[b].body;
+    if (!ts[b].back_is_none())
+        args_s += ts[b].back;
+    ++b;
+    while (ts[b].back != ';')
+    {
+        args_s += ts[b].to_string();
+        ++b;
+    }
+    args_s += ts[b].to_string();
+    return { args_s,b };
 }
 
 void rm_method(std::vector<token::Token>& ts,std::string name,std::string args)
@@ -89,7 +116,7 @@ void rm_method(std::vector<token::Token>& ts,std::string name,std::string args)
     {
         auto& it = ts[i];
         
-        if(it.per == '.' && it.body == "method" && ts[i + 2].body == name && get_args_str(ts,i + 3) == args)
+        //if(it.per == '.' && it.body == "method" && ts[i + 2].body == name && get_args_str(ts,i + 3) == args)
         {
             
         }
@@ -140,4 +167,79 @@ void replace(std::filesystem::path& file,std::string f,std::string r)
             dbg("write e");
         }
     }
+}
+
+std::tuple<int,int64_t> get_tag_max(std::vector<token::Token>& ts, std::string mothed, bool is_state, std::string args,std::string tag)
+{
+    int b = get_mothed_prologue(ts, mothed, is_state, args);
+
+    if (b >= 0)
+    {
+        int res = 0;
+        for (int i = b; i < ts.size(); ++i)
+        {
+            auto& it = ts[i];
+
+            if ((it.per == '.' && it.body == "end" && ts[i + 1].body == "method") || 
+                (it.back == '.' && ts[i + 1].body == "end" && ts[i + 2].body == "method"))
+            {
+                break;
+            }
+            std::string* ftag = nullptr;
+            if (it.per == ':' && it.body.find(tag) == 0)
+            {
+                ftag = &it.body;
+            }
+            if (it.back == ':' && ts[i + 1].body.find(tag) == 0)
+            {
+                ftag = &ts[i + 1].body;
+            }
+            if (ftag)
+            {
+                int n = wws::parser<int>(ftag->substr( ftag->find("_") + 1),16i64);
+                if (n > res)
+                    res = n;
+            }
+        }
+        return std::make_tuple(res, b);
+    }
+    return std::make_tuple(-1, b);
+}
+
+std::string to_hex(int v)
+{
+    std::strstream ss;
+    ss << std::hex << v << '\0';
+    ss.flush();
+    return std::string(ss.str());
+}
+
+int64_t get_invoke_mothed(std::vector<token::Token>& ts, std::string obj_name,std::string mothed, std::string args,int b)
+{
+    for (int i = b; i < ts.size(); ++i)
+    {
+        auto& it = ts[i];
+        int res = 0;
+        for (int i = b; i < ts.size(); ++i)
+        {
+            auto& it = ts[i];
+
+            if ((it.per == '.' && it.body == "end" && ts[i + 1].body == "method") ||
+                (it.back == '.' && ts[i + 1].body == "end" && ts[i + 2].body == "method"))
+            {
+                break;
+            }
+            if (it.body == "invoke" && it.back == '-')
+            {
+                auto [s,e] = get_class_str(ts, i);
+                if (s == obj_name && ts[e + 2].body == mothed)
+                {
+                    auto [as, ae] = get_args_str(ts, e);
+                    if (as == args)
+                        return i;
+                }
+            }
+        }
+    }
+    return -1;
 }

@@ -43,4 +43,4 @@ add_executable(down_v1v2 down_v1v2.cpp)
 add_executable(down_res down_res.cpp)
 add_executable(gen_res_conf gen_res_conf.cpp)
 add_executable(replace_wxid replace_wxid.cpp)
-
+add_executable(plug plug.cpp)
