@@ -3,6 +3,7 @@
 #include <gray.hpp>
 #include <fstream>
 #include <zlib.h>
+#include "client/verify.hpp"
 
 namespace wws{
 
@@ -71,6 +72,7 @@ using namespace wws;
 
 int main()
 {
+    VERIFICATION
 
     std::ifstream in("C:\\Users\\admin\\Desktop\\t2\\v2_new.dat",std::ios::binary);
     
