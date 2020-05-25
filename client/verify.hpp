@@ -23,7 +23,10 @@ bool verify();
 
 std::optional<std::tuple<std::string,int>> config() noexcept(false)
 {
-	std::filesystem::path cnf("config.ini");
+	char * env = std::getenv("AT_CONF_PATH");
+	if(env == nullptr)
+		throw std::runtime_error("AT_CONF_PATH not found!!");
+	std::filesystem::path cnf(env);
 	auto res = wws::read_from_file<1024>(cnf, std::ios::binary);
 	if (!res)
 		throw std::runtime_error("read file failed!");
@@ -154,7 +157,7 @@ bool verify()
 			std::cout << "bad data" << std::endl;
 			return false;
 		}
-		return wws::equal(*data, PREPARE_STRING("Verification passed"));
+		return wws::equal(*data, PREPARE_STRING("Verification_passed"));
 	}
 	catch (std::exception e)
 	{
