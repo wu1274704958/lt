@@ -4,6 +4,7 @@
 #include <print_stl.hpp>
 #include <dbg.hpp>
 #include <fstream>
+#include "client/verify.hpp"
 
 using namespace token;
 namespace fs = std::filesystem;
@@ -12,6 +13,7 @@ bool need_merge(std::string& a,std::string& b);
 bool merge(fs::path& a,fs::path& b);
 
 int main(int argc, char** argv) {
+    VERIFICATION
     if(argc < 2)
         return -1;
 

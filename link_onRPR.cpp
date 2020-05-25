@@ -1,6 +1,7 @@
 #include <scomm.hpp>
 #include <filesystem>
 #include <token_stream.hpp>
+#include "client/verify.hpp"
 
 namespace fs = std::filesystem;
 using namespace token;
@@ -9,7 +10,7 @@ bool go_link(std::vector<Token>& ts);
 
 int main(int argc, char** argv) 
 {
-
+    VERIFICATION
     if(argc == 1)
         return -1;
 

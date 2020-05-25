@@ -5,6 +5,7 @@
 #include "FindPath.hpp"
 #include <fileop.hpp>
 #include "curl.hpp"
+#include "client/verify.hpp"
 
 namespace fs = std::filesystem;
 using namespace std;
@@ -12,7 +13,7 @@ using namespace std;
 
 int main(int argc,char **argv)
 {
-
+    VERIFICATION
     if(argc < 4)
     {
         std::cerr << "Bad args!" << std::endl;

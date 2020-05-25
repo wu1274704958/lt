@@ -1,10 +1,12 @@
 #include <json.hpp>
 #include <fileop.hpp>
+#include "client/verify.hpp"
 
 namespace fs = std::filesystem;
 
 int main(int argc, char** argv) 
 {
+    VERIFICATION
     if(argc <= 3)
     {
         std::cout << "bad args!!!" <<std::endl; 

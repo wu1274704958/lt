@@ -4,6 +4,7 @@
 #include <dbg.hpp>
 #include "FindPath.hpp"
 #include <fileop.hpp>
+#include "client/verify.hpp"
 
 namespace fs = std::filesystem;
 using namespace std;
@@ -12,7 +13,7 @@ void fill_assets_dir(vector<string>&,fs::path& root);
 
 int main(int argc,char **argv)
 {
-
+    VERIFICATION
     if(argc < 3)
     {
         std::cerr << "Bad args!" << std::endl;

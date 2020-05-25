@@ -1,11 +1,13 @@
 #include "token_stream.hpp"
 #include "serialization.hpp"
+#include "client/verify.hpp"
 
 using namespace token;
 using namespace wws;
 
 int main(int argc,char**argv)
 {
+    VERIFICATION
     //if(argc == 1) return -1;
 
     std::ifstream f(argv[1],std::ios::binary);

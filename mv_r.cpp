@@ -5,6 +5,7 @@
 #include <dbg.hpp>
 #include <fstream>
 #include <strstream>
+#include "client/verify.hpp"
 
 using namespace token;
 namespace fs = std::filesystem;
@@ -17,6 +18,7 @@ std::string get_smali_pkg(std::string ori);
 void replace(fs::path& file,std::string f,std::string r);
 
 int main(int argc, char** argv) {
+    VERIFICATION
     if(argc < 4)
         return -1;
 

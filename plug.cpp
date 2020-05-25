@@ -4,6 +4,7 @@
 
 #include <dbg.hpp>
 #include <scomm.hpp>
+#include "client/verify.hpp"
 
 namespace fs = std::filesystem;
 
@@ -11,6 +12,7 @@ token::Token gen_insert_token(int, std::string, std::string, std::string);
 
 int main(int argc, char** argv)
 {
+    VERIFICATION
     if (argc < 3)
     {
         std::cout << "bad args!!! out_pkg config " << std::endl;
