@@ -9,6 +9,7 @@
 namespace fs = std::filesystem;
 
 token::Token gen_insert_token(int, std::string, std::string, std::string);
+void copy_other(fs::path& conf_p, fs::path& out, wws::Json& cnf);
 
 int main(int argc, char** argv)
 {
@@ -49,6 +50,8 @@ int main(int argc, char** argv)
     auto dst = out / "smali";
 
     fs::copy(smali_dir, dst, fs::copy_options::overwrite_existing | fs::copy_options::recursive);
+
+    copy_other(conf,out,cnf);
 
     fs::path extern_call = dst / "ane";
     extern_call /= "com"; extern_call /= "nativelib"; extern_call /= "ExternalCall.smali";
@@ -107,4 +110,33 @@ token::Token gen_insert_token(int count, std::string name , std::string method, 
         " :" << tag << '\0';
     ss.flush();
     return token::Token(std::string(ss.str()), '\n', '\n');
+}
+
+void copy_other(fs::path& conf_p,fs::path& out, wws::Json& cnf)
+{
+    if (dbg(cnf.has_key("layout")))
+    {
+        auto layout = cnf.get<std::string>("layout");
+        auto src = fs::absolute(conf_p).parent_path();
+        src /= layout;
+        auto dst = out / "res/layout";
+        dbg(fs::exists(src));
+        if (fs::exists(src))
+        {
+            fs::copy(src,dst,fs::copy_options::overwrite_existing | fs::copy_options::recursive);
+        }
+    }
+
+    if (dbg(cnf.has_key("drawable")))
+    {
+        auto draw = cnf.get<std::string>("drawable");
+        auto src = fs::absolute(conf_p).parent_path();
+        src /= draw;
+        auto dst = out / "res/drawable";
+        dbg(fs::exists(src));
+        if (fs::exists(src))
+        {
+            fs::copy(src, dst, fs::copy_options::overwrite_existing | fs::copy_options::recursive);
+        }
+    }
 }
