@@ -78,6 +78,19 @@ int main(int argc, char** argv)
     int64_t idx  = get_invoke_mothed(ts.tokens, "Landroid/util/SparseArray;", "put", "(ILjava/lang/Object;)", b);
     dbg(idx);
 
+    std::string ty_name = "L"; ty_name += cnf.get<std::string>("name"); ty_name += ";";
+    for (int i = 0; i < ty_name.size(); ++i)
+    {
+        if (ty_name[i] == '.')
+            ty_name[i] = '/';
+    }
+
+    int64_t idx_ = get_invoke_mothed(ts.tokens, ty_name, cnf.get<std::string>("method"), "(Landroid/util/SparseArray;ILorg/json/JSONObject;Landroid/app/Activity;)", idx);
+    if (dbg(idx_) != -1)
+    {
+        std::cout << "already call this plug !!" << std::endl;
+        return 1;
+    }
     while (ts.tokens[idx].back != '\n') { ++idx; }
 
     ts.tokens.insert(ts.tokens.begin() + (idx + 1), std::move(tok));
