@@ -24,7 +24,7 @@ int main(int argc,char **argv)
     auto cdn = argv[1];
     auto out_path = fs::path(argv[2]);
 
-    wws::thread_pool tp(2);
+    wws::thread_pool tp(3);
 
     tp.add_task([cdn,&out_path](){
         download(cdn,"v1.dat",out_path);
@@ -34,6 +34,9 @@ int main(int argc,char **argv)
     });
     tp.add_task([cdn,&out_path](){
         download(cdn,"v2.json",out_path);
+    });
+    tp.add_task([cdn, &out_path]() {
+        download(cdn, "MobileMain.swf", out_path);
     });
     while(tp.has_not_dispatched()){ this_thread::sleep_for(std::chrono::milliseconds(2));}
     tp.wait_all();
