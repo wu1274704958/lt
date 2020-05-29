@@ -119,6 +119,8 @@ token::Token gen_insert_token(int count, std::string name , std::string method, 
         " if-ne v4, v5, :" << tag << "\n" <<
         " move-object/from16 v2, p3\n" <<
         " sget-object v3, Lane/com/nativelib/ExternalCall;->context:Landroid/app/Activity;\n" <<
+        " sget-object v0, Lane/com/nativelib/ExternalCall;->callbacks:Landroid/util/SparseArray;\n" << 
+        " move/from16 v1, p2\n" <<
         " invoke-static {v0, v1, v2, v3}, L" << name << ";" << "->" << method << "(Landroid/util/SparseArray;ILorg/json/JSONObject;Landroid/app/Activity;)V\n" <<
         " :" << tag << '\0';
     ss.flush();
