@@ -243,3 +243,47 @@ int64_t get_invoke_mothed(std::vector<token::Token>& ts, std::string obj_name,st
     }
     return -1;
 }
+
+/*
+V   void
+Z   boolean
+B   byte
+S   short
+C   char
+I   int
+J   long
+F   float
+D   double
+*/
+
+inline int args_count(const std::string& args)
+{
+    int res = 0;
+    int stage = 0;
+    for (int i = 0; i < args.size(); ++i)
+    {
+        if (args[i] == 'Z' ||
+            args[i] == 'B' ||
+            args[i] == 'S' ||
+            args[i] == 'C' ||
+            args[i] == 'I' ||
+            args[i] == 'J' ||
+            args[i] == 'F' ||
+            args[i] == 'D'
+            )
+        {
+            ++res;
+            stage = 0;
+        }
+        else if (args[i] == 'L')
+        {
+            ++stage;
+        }
+        else if (stage == 1 && args[i] == ';')
+        {
+            stage = 0;
+            ++res;
+        }
+    }
+    return res;
+}
