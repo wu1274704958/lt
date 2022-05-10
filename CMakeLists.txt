@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.0.0)
 project(lt VERSION 0.1.0)
 
 if(MSVC)
-    add_definitions("/std:c++17")
+    add_definitions("/std:c++latest")
 endif()
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/cmake)
@@ -54,3 +54,4 @@ Exec(down_res)
 Exec(gen_res_conf)
 Exec(replace_wxid)
 Exec(plug)
+Exec(sync_dir)
