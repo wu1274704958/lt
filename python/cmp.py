@@ -55,9 +55,10 @@ def main(file_a, file_b=None):
         if idx != None:
             k = file_a[:len(file_a) - idx]
             v = file_b[:len(file_b) - idx]
-            mappings[k] = v
-            save_mappings(mappings)
-            print(f"Mapping saved: {k} -> {v}")
+            if len(k) > 0 and len(v) > 0:
+                mappings[k] = v
+                save_mappings(mappings)
+                print(f"Mapping saved: {k} -> {v}")
     else:
         # 尝试找到与 file_a 匹配的记录
         file_b,key = try_get_mappinged_b_path(mappings,file_a)
