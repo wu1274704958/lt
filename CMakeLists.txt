@@ -29,9 +29,13 @@ set(CLIENT_IMPL_SRC ${CMAKE_SOURCE_DIR}/client/socket_win_impl.cpp)
 set(CLIENT_IMPL_LIB ws2_32.lib)
 
 Function(Exec ag1 )
-    set(CLIENT_EXEC_NAME ${ag1})
-    add_executable(${CLIENT_EXEC_NAME} "${CLIENT_EXEC_NAME}.cpp" ${CLIENT_IMPL_SRC})
-    target_link_libraries(${CLIENT_EXEC_NAME} ${CLIENT_IMPL_LIB})
+    if(ZLIB_FOUND)
+        if(MINI_TEST_FOUND)
+            set(CLIENT_EXEC_NAME ${ag1})
+            add_executable(${CLIENT_EXEC_NAME} "${CLIENT_EXEC_NAME}.cpp" ${CLIENT_IMPL_SRC})
+            target_link_libraries(${CLIENT_EXEC_NAME} ${CLIENT_IMPL_LIB})
+        endif()
+    endif()
 endfunction(Exec)
 
 Exec(tit_s)
@@ -57,3 +61,6 @@ Exec(plug)
 Exec(sync_dir)
 Exec(rename)
 Exec(link_f)
+
+
+add_subdirectory(tools)
