@@ -1,4 +1,5 @@
 #include <local_mem_adapter.h>
+#include <common.h>
 
 #if WIN32
 
@@ -13,7 +14,7 @@ bool eqd::win_local_mem_adapter::init(const std::string& mem_id, uint32_t size)
         mem_id.c_str());
     if (NULL == mem_handle)
     {
-        _last_error = "Create file mapping failed " + ::GetLastError();
+        _last_error = eqd::fmt("Create file mapping failed %ld", ::GetLastError());
         return false;
     }
     ptr = (uint8_t*)::MapViewOfFile(mem_handle,
@@ -23,7 +24,7 @@ bool eqd::win_local_mem_adapter::init(const std::string& mem_id, uint32_t size)
         size);     //all memory space  
     if (nullptr == ptr)
     {
-        _last_error = "Map memory failed " + ::GetLastError();
+        _last_error = eqd::fmt("Map memory failed %ld",::GetLastError());
         release();
         return false;
     }
@@ -54,12 +55,12 @@ bool eqd::win_local_mem_adapter::create_event(const std::string& mem_id)
             );
 
             if (event_handle == NULL) {
-                _last_error = "Create event failed " + ::GetLastError();
+                _last_error = eqd::fmt("Create event failed %ld" ,::GetLastError());
                 return false;
             }
         }
         else {
-            _last_error = "Open event failed " + ::GetLastError();
+            _last_error = eqd::fmt("Open event failed %ld", ::GetLastError());
             return false;
         }
     }

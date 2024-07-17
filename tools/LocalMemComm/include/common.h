@@ -1,5 +1,9 @@
 #pragma once
 #include <numeric>
+#include <cstdio>
+#include <string>
+#include <cstdarg>
+
 
 namespace eqd {
 	enum class LMC_state : uint8_t
@@ -10,4 +14,6 @@ namespace eqd {
 		Idle				,
 		Uninit				
 	};
+
+	std::string fmt(const char* format, ...);
 }

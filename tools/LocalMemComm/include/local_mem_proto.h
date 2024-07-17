@@ -30,7 +30,7 @@ namespace eqd {
 				ptr[2] = send_id;
 				ptr[3] = 0;
 				write_data(ptr + 4, static_cast<uint32_t>(buf.size()));
-				write_data(ptr + 4 + sizeof(uint32_t), static_cast<uint32_t>(typename CS::checksum(buf)));
+				write_data(ptr + 4 + sizeof(uint32_t), static_cast<uint32_t>(CS::checksum(buf)));
 				memcpy(ptr + 4 + sizeof(uint32_t) * 2, buf.data(),buf.size());
 				return LMC_state::Success;
 			}
@@ -51,7 +51,7 @@ namespace eqd {
 				_last_error = "message size > memory size";
 				return LMC_state::Failed;
 			}
-			if (checksum != typename CS::checksum(ptr + 4 + sizeof(uint32_t) * 2, msg_len))
+			if (checksum != CS::checksum(ptr + 4 + sizeof(uint32_t) * 2, msg_len))
 			{
 				_last_error = "message check sum failed";
 				return LMC_state::Failed;

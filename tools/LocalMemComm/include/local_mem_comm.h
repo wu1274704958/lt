@@ -25,7 +25,7 @@ namespace eqd {
 			if (!init_adapter)
 			{
 				std::string error = adapter.last_error();
-				typename EH::error(std::move(error));
+				EH::error(std::move(error));
 				return;
 			}
 			adapter.try_wait_lock_mem();
@@ -33,7 +33,7 @@ namespace eqd {
 			if (!init_proto)
 			{
 				std::string error = proto.last_error();
-				typename EH::error(std::move(error));
+				EH::error(std::move(error));
 			}
 			adapter.unlock_mem();
 		}
@@ -85,7 +85,7 @@ namespace eqd {
 		{
 			if (!init_success()) return;
 			const std::vector<uint8_t> msg_data = serializer.serialize(data);
-			assert(data.size() > 0, "Data len must > 0!");
+			assert(data.size() > 0);
 			if (send_buf.empty())
 			{
 				bool succ = try_send(msg_data);
@@ -125,7 +125,7 @@ namespace eqd {
 				if (state == LMC_state::Failed)
 				{
 					const std::string& error = proto.last_error();
-					typename EH::error(error);
+					EH::error(error);
 				}
 				adapter.unlock_mem();
 				return state == LMC_state::Success;
@@ -157,7 +157,7 @@ namespace eqd {
 				if (state == LMC_state::Failed)
 				{
 					const std::string& error = proto.last_error();
-					typename EH::error(error);
+					EH::error(error);
 				}
 				adapter.unlock_mem();
 				return state;
