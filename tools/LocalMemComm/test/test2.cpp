@@ -24,8 +24,7 @@ int main()
 		ErrorHandler> comm ("TEST",4096);
 
 	comm.send("hello");
-	comm.send("world");
-	comm.send("exit");
+	comm.send("hhhhhh");
 
 	while (true)
 	{
@@ -36,10 +35,6 @@ int main()
 				std::cout << "recv = [" << msg.value() << ']' << std::endl;
 				if (msg == "exit")
 					break;
-				else if (msg == "hhhhhh")
-					comm.send("exit");
-				else if (msg == "qqq")
-					comm.send("quit");
 			}
 		}
 	}

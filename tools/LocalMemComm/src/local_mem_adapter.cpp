@@ -33,8 +33,27 @@ bool eqd::win_local_mem_adapter::init(const std::string& mem_id, uint32_t size)
         release();
         return false;
     }
+    if (!create_mutex(mem_id))
+    {
+        release();
+        return false;
+    }
 
 	return true;
+}
+
+bool eqd::win_local_mem_adapter::create_mutex(const std::string& mem_id)
+{
+    std::string name = "GlobalMutex_";
+    name += mem_id;
+
+    mutex_handle = CreateMutex(NULL, false, name.c_str());
+    if (event_handle == NULL)
+    {
+        _last_error = eqd::fmt("Create mutex failed %ld", ::GetLastError());
+        return false;
+    }
+    return true;
 }
 
 bool eqd::win_local_mem_adapter::create_event(const std::string& mem_id)
@@ -74,6 +93,11 @@ void eqd::win_local_mem_adapter::release()
         CloseHandle(event_handle);
         event_handle = NULL;
     }
+    if (mutex_handle != NULL)
+    {
+        CloseHandle(mutex_handle);
+        mutex_handle = NULL;
+    }
     if (ptr != nullptr)
     {
         UnmapViewOfFile(ptr);
@@ -105,7 +129,11 @@ bool eqd::win_local_mem_adapter::try_lock_mem()
 {
     if (WaitForSingleObject(event_handle, 0) == WAIT_OBJECT_0)
     {
-        return ResetEvent(event_handle);
+        if (ResetEvent(event_handle))
+        {
+            WaitForSingleObject(mutex_handle, INFINITE);
+            return true;
+        }
     }
     return false;
 }
@@ -113,12 +141,17 @@ bool eqd::win_local_mem_adapter::try_wait_lock_mem()
 {
     if (WaitForSingleObject(event_handle, INFINITE) == WAIT_OBJECT_0)
     {
-        return ResetEvent(event_handle);
+        if (ResetEvent(event_handle))
+        {
+            WaitForSingleObject(mutex_handle, INFINITE);
+            return true;
+        }
     }
     return false;
 }
 void eqd::win_local_mem_adapter::unlock_mem()
 {
+    ReleaseMutex(mutex_handle);
     SetEvent(event_handle);
 }
 

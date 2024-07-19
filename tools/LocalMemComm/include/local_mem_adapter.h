@@ -19,12 +19,14 @@ namespace eqd {
 		void unlock_mem();
 	protected:
 		bool create_event(const std::string& mem_id);
+		bool create_mutex(const std::string& mem_id);
 	private:
 		uint8_t* ptr = nullptr;
 		uint32_t size = 0;
 		std::string _last_error;
 		::HANDLE mem_handle = NULL;
 		::HANDLE event_handle = NULL;
+		::HANDLE mutex_handle = NULL;
 	};
 
 }

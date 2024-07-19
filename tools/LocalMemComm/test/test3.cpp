@@ -23,9 +23,8 @@ int main()
 		win_local_mem_adapter,
 		ErrorHandler> comm ("TEST",4096);
 
-	comm.send("hello");
 	comm.send("world");
-	comm.send("exit");
+	comm.send("qqq");
 
 	while (true)
 	{
@@ -34,12 +33,8 @@ int main()
 			if(msg)
 			{ 
 				std::cout << "recv = [" << msg.value() << ']' << std::endl;
-				if (msg == "exit")
+				if (msg == "quit")
 					break;
-				else if (msg == "hhhhhh")
-					comm.send("exit");
-				else if (msg == "qqq")
-					comm.send("quit");
 			}
 		}
 	}
