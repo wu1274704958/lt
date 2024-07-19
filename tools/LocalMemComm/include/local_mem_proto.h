@@ -5,6 +5,7 @@
 #include <string>
 #include <numeric>
 #include <functional>
+//#include <iostream>
 
 namespace eqd {
 
@@ -27,6 +28,9 @@ namespace eqd {
 			if (ptr[2] == ST_IDLE && ptr[3] == 0)
 			{
 				ptr[1] = ptr[1] + 1;
+				if (ptr[1] == 0)
+					ptr[1] = 1;
+//				std::cout << "<<< send id = " << (int)ptr[1] << std::endl;
 				ptr[2] = send_id;
 				ptr[3] = 0;
 				write_data(ptr + 4, static_cast<uint32_t>(buf.size()));
@@ -42,8 +46,15 @@ namespace eqd {
 			if (send_id == 0) return LMC_state::Uninit;
 			if (ptr[2] == ST_IDLE && ptr[3] == 0)
 				return LMC_state::Idle;
-			if(ptr[2] == send_id || last_recv_msg_id == ptr[1])
+			if (ptr[2] == send_id || last_recv_msg_id == ptr[1])
+			{	
+				//readed count > sum - 1 can clear 
+				if (ptr[3] >= ptr[0] - 1)
+					set_idle(ptr, size);
 				return LMC_state::Busy;
+			}
+//			std::cout << ">>> recv id = " << (int)ptr[1] << std::endl;
+			last_recv_msg_id = ptr[1];
 			uint32_t msg_len = read_data<uint32_t>(ptr + 4);
 			uint32_t checksum = read_data<uint32_t>(ptr + 4 + sizeof(uint32_t));
 			if (msg_len + HeaderSize > size)
@@ -57,7 +68,7 @@ namespace eqd {
 				return LMC_state::Failed;
 			}
 			callback(ptr + 4 + sizeof(uint32_t) * 2, msg_len);
-
+			// readed == count - 1
 			if (ptr[3] + 1 == ptr[0] - 1)
 				set_idle(ptr, size);
 			else

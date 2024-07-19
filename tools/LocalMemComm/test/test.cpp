@@ -2,6 +2,7 @@
 #include "local_mem_adapter.h"
 #include "local_mem_proto.h"
 #include "test_component.h"
+#include <iostream>
 
 using namespace eqd;
 
@@ -32,9 +33,11 @@ int main()
 			auto msg = comm.pop_recv();
 			if(msg)
 			{ 
-				printf("recv %s\n", msg.value().data());
+				std::cout << "recv = " << msg.value() << std::endl;
 				if (msg == "exit")
 					break;
+				else if (msg == "hhhhhh")
+					comm.send("exit");
 			}
 		}
 	}
