@@ -31,8 +31,10 @@ namespace fv {
 		void setPumpDir(bool pump_dir);
 		void setFillMusicFunc(std::function<void(const std::shared_ptr<std::vector<MMFile>>&)> f);
 		void setNextMusic(const MMFile *nm);
+		bool setNextMusic(const wchar_t* name);
 		
 		void init(const char* root_dir);
+		void init(const wchar_t* root_dir);
 		std::shared_ptr<std::vector<MMFile>> pop();
 		void onclick(int idx);
 

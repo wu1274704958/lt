@@ -4,7 +4,6 @@
 #include <stdio.h>
 
 
-
 fv::Pumper::Pumper( MusicPlayer &player) : m_player(player)
 {
 	m_mode = NONE;
@@ -18,6 +17,22 @@ void fv::Pumper::setNextMusic(const MMFile *nm)
 {
 	cleanup();
 	next_music = new MMFile(*nm);
+}
+
+bool fv::Pumper::setNextMusic(const wchar_t* name)
+{
+	auto current = this->m_root.top();
+	for (int i = 0; i < current->size(); ++i)
+	{
+		auto& n = current->at(i).getNameStr();
+		if (n.find(name) != std::wstring::npos)
+		{
+			cleanup();
+			next_music = new MMFile(current->at(i));
+			return true;
+		}
+	}
+	return false;
 }
 
 fv::Pumper::~Pumper()
@@ -87,7 +102,8 @@ void fv::Pumper::all_templet()
 	if (next_music)
 	{
 		m_player.playStream(*next_music);
-		onAutoPlay(*next_music);
+		if(onAutoPlay)
+			onAutoPlay(*next_music);
 		delete next_music;
 		next_music = nullptr;
 		return;
@@ -109,18 +125,20 @@ void fv::Pumper::all_templet()
 				m_index = 0;
 			}
 		}
-		if (m_root.top()->at(m_index).getType() == MMFile::TYPE_DIR && pump_dir && (bool)fill_music_func)
+		if (m_root.top()->at(m_index).getType() == MMFile::TYPE_DIR && pump_dir)
 		{
 			std::shared_ptr<std::vector<MMFile>> temp = std::make_shared<std::vector<MMFile>>();
 			temp->reserve(5);
 			GetFileName::getFileNameW(*temp, m_root.top()->at(m_index).getAbsolutePath());
 			m_root.push(temp);
-			fill_music_func(temp);
+			if(fill_music_func)
+				fill_music_func(temp);
 			m_index = 0;
 		}
 		else {
 			m_player.playStream(m_root.top()->at(m_index));
-			onAutoPlay(m_root.top()->at(m_index));
+			if(onAutoPlay)
+				onAutoPlay(m_root.top()->at(m_index));
 			++m_index;
 		}
 	}
@@ -156,7 +174,19 @@ void fv::Pumper::init(const char* root_dir)
 	temp->reserve(5);
 	GetFileName::getFileNameA(*temp, root_dir);
 	m_root.push(temp);
-	fill_music_func(temp);
+	if (fill_music_func)
+		fill_music_func(temp);
+	m_index = 0;
+}
+
+void fv::Pumper::init(const wchar_t* root_dir)
+{
+	std::shared_ptr<std::vector<MMFile>> temp = std::make_shared<std::vector<MMFile>>();
+	temp->reserve(5);
+	GetFileName::getFileNameW(*temp, root_dir);
+	m_root.push(temp);
+	if (fill_music_func)
+		fill_music_func(temp);
 	m_index = 0;
 }
 
@@ -184,11 +214,13 @@ void fv::Pumper::onclick(int idx)
 			//std::lock_guard<std::mutex> lock(load_file_name_mutex);
 			m_root.push(temp_v);
 			m_index = 0;
-			fill_music_func(temp_v);
+			if (fill_music_func)
+				fill_music_func(temp_v);
 		}
 		else {
 			m_player.playStream(pmf);
-			onAutoPlay(pmf);
+			if(onAutoPlay)
+				onAutoPlay(pmf);
 			setIndex(idx + 1);
 		}
 	}

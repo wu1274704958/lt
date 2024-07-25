@@ -118,6 +118,12 @@ const MMFILE_CHAR_TYPE* MMFile::getName() const
     return name->data();
 }
 
+const MMFILE_STR_TYPE& MMFile::getNameStr() const
+{
+	return *name;
+}
+
+
 void MMFile::setName(const MMFILE_CHAR_TYPE *n)
 {
     *(name) = n;

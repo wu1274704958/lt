@@ -46,6 +46,7 @@ public:
     void setType(FILE_TYPE t);
 
 	const MMFILE_CHAR_TYPE *getName() const;
+    const MMFILE_STR_TYPE& getNameStr() const;
     void setName(const MMFILE_CHAR_TYPE* n);
 
     const MMFILE_CHAR_TYPE *getPath() const;
