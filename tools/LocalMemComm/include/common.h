@@ -1,5 +1,5 @@
 #pragma once
-#include <numeric>
+#include <cstdint>
 #include <cstdio>
 #include <string>
 #include <cstdarg>

@@ -1,4 +1,4 @@
-#include <numeric>
+#include <cstdint>
 #include <string>
 #include <functional>
 #include <list>
