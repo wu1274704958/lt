@@ -8,7 +8,7 @@ using namespace eqd;
 
 class ErrorHandler {
 public:
-	static void error(const std::string& err)
+	static void error(void* ptr,const std::string& err)
 	{
 		printf("err = %s\n", err.c_str());
 	}
@@ -25,6 +25,7 @@ int main()
 
 	comm.send("hello");
 	comm.send("hhhhhh");
+	comm.send("exit");
 
 	while (true)
 	{

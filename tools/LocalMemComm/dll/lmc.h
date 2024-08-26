@@ -9,20 +9,20 @@ extern "C" {
 #define LMC_EXPORTS __declspec(dllimport)
 #endif
 
-	typedef void(*error_callback)(int,const char*);
+	typedef void(*error_callback)(unsigned int,const char*);
 	typedef void(*recv_callback)(const char*);
 
-	void LMC_EXPORTS LMC_init(const char* mem_id,unsigned int size, error_callback callback);
+	unsigned int LMC_EXPORTS LMC_init(const char* mem_id,unsigned int size, error_callback callback);
 
-	void LMC_EXPORTS LMC_send(const char* msg);
+	void LMC_EXPORTS LMC_send(unsigned int,const char* msg);
 
-	int LMC_EXPORTS LMC_tick();
+	int LMC_EXPORTS LMC_tick(unsigned int);
 
-	int LMC_EXPORTS LMC_has_unsend();
+	int LMC_EXPORTS LMC_has_unsend(unsigned int);
 
-	int LMC_EXPORTS LMC_pop_recv(recv_callback callback);
+	int LMC_EXPORTS LMC_pop_recv(unsigned int,recv_callback callback);
 
-	void LMC_EXPORTS LMC_release();
+	void LMC_EXPORTS LMC_release(unsigned int);
 
-	void LMC_EXPORTS LMC_reset();
+	void LMC_EXPORTS LMC_reset(unsigned int);
 }

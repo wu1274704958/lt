@@ -25,7 +25,7 @@ namespace eqd {
 			if (!init_adapter)
 			{
 				std::string error = adapter.last_error();
-				EH::error(std::move(error));
+				EH::error(this,std::move(error));
 				return;
 			}
 			adapter.try_wait_lock_mem();
@@ -33,7 +33,7 @@ namespace eqd {
 			if (!init_proto)
 			{
 				std::string error = proto.last_error();
-				EH::error(std::move(error));
+				EH::error(this,std::move(error));
 			}
 			adapter.unlock_mem();
 		}
@@ -138,7 +138,7 @@ namespace eqd {
 				if (state == LMC_state::Failed)
 				{
 					const std::string& error = proto.last_error();
-					EH::error(error);
+					EH::error(this,error);
 				}
 				adapter.unlock_mem();
 				return state == LMC_state::Success;
@@ -170,7 +170,7 @@ namespace eqd {
 				if (state == LMC_state::Failed)
 				{
 					const std::string& error = proto.last_error();
-					EH::error(error);
+					EH::error(this,error);
 				}
 				adapter.unlock_mem();
 				return state;
