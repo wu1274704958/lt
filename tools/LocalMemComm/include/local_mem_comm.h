@@ -106,7 +106,20 @@ namespace eqd {
 
 		bool has_unsend() const
 		{
+			if (!init_success()) return false;
 			return !send_buf.empty();
+		}
+
+		void reset()
+		{
+			send_buf.clear();
+			recv_buf.clear();
+			if (adapter.try_lock_mem())
+			{
+				uint8_t* ptr = adapter.get_mem();
+				proto.set_idle(ptr, size);
+				adapter.unlock_mem();
+			}
 		}
 	protected:
 

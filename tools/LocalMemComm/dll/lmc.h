@@ -23,4 +23,6 @@ extern "C" {
 	int LMC_EXPORTS LMC_pop_recv(recv_callback callback);
 
 	void LMC_EXPORTS LMC_release();
+
+	void LMC_EXPORTS LMC_reset();
 }

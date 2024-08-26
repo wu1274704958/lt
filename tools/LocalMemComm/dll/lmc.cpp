@@ -136,6 +136,14 @@ extern "C" {
 		}
 	}
 
+	void LMC_EXPORTS LMC_reset()
+	{
+		if (comm != nullptr)
+		{
+			comm->reset();
+		}
+	}
+
 }
 
 void ErrorHandler::error(const std::string& err)
