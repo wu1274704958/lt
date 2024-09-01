@@ -3,6 +3,13 @@
 #include "local_mem_adapter.h"
 #include "local_mem_proto.h"
 #include "test_component.h"
+#include <unordered_map>
+
+
+#ifdef max
+#undef max
+#endif // max
+
 
 #define INPUT_MSG_UNICODE 1
 
@@ -27,7 +34,10 @@ using CommTy = LocalMemComm<local_mem_proto<
 	win_local_mem_adapter,
 	ErrorHandler>;
 
-std::vector<CommTy*> comms;
+using MapTy = std::unordered_map<uint32_t, CommTy*>;
+using IteratorTy = MapTy::iterator;
+MapTy comms;
+int32_t Current = 0;
 
 #if INPUT_MSG_UNICODE
 namespace cvt {
@@ -67,46 +77,56 @@ extern "C" {
 
 	unsigned int LMC_init(const char* mem_id, unsigned int size, error_callback callback)
 	{
+		uint32_t id = Current + 1;
+		if(comms.find(id) != comms.end())
+		{
+			return 0;
+		}
 		auto comm = new CommTy(mem_id, size);
-		comms.push_back(comm);
+		comms.insert(std::pair(id,comm));
+		Current++;
 		global_err_callback = callback;
 		return (unsigned int)comms.size();
 	}
 
 	void LMC_send(unsigned int id,const char* msg)
 	{
-		if (id > 0 && id <= comms.size())
+		IteratorTy it;
+		if (it = comms.find(id);it != comms.end())
 #if !INPUT_MSG_UNICODE
-			comms[id - 1]->send(msg);
+			it->second->send(msg);
 #else
 		{
 			const wchar_t* data = (const wchar_t*)msg;
 			std::wstring str(data);
 			std::string utf8_msg = cvt::unicode2utf8(str, comms[id - 1]);
-			comms[id - 1]->send(utf8_msg);
+			it->second->send(utf8_msg);
 		}
 #endif
 	}
 
 	int LMC_tick(unsigned int id)
 	{
-		if (id > 0 && id <= comms.size())
-			return comms[id - 1]->tick() ? 1 : 0;
+		IteratorTy it;
+		if (it = comms.find(id); it != comms.end())
+			return it->second->tick() ? 1 : 0;
 		return 0;
 	}
 
 	int LMC_has_unsend(unsigned int id)
 	{
-		if (id > 0 && id <= comms.size())
-			return comms[id - 1]->has_unsend() ? 1 : 0;
+		IteratorTy it;
+		if (it = comms.find(id); it != comms.end())
+			return it->second->has_unsend() ? 1 : 0;
 		return 0;
 	}
 
 	int LMC_pop_recv(unsigned int id,recv_callback callback)
 	{
-		if (id > 0 && id <= comms.size())
+		IteratorTy it;
+		if (it = comms.find(id); it != comms.end())
 		{
-			auto res = comms[id - 1]->pop_recv();
+			auto res = it->second->pop_recv();
 			if (res)
 			{
 				if (callback != nullptr)
@@ -124,32 +144,22 @@ extern "C" {
 		return 0;
 	}
 
-	void check_comms_all_release()
-	{
-		for (int i = 0;i < comms.size(); ++i)
-		{
-			if (comms[i] != nullptr)
-				return;
-		}
-		if (!comms.empty())
-			comms.clear();
-	}
-
 	void LMC_release(unsigned int id)
 	{
-		if (id > 0 && id <= comms.size())
+		IteratorTy it;
+		if (it = comms.find(id); it != comms.end())
 		{
-			delete comms[id - 1];
-			comms[id - 1] = nullptr;
-			check_comms_all_release();
+			delete it->second;
+			comms.erase(it);
 		}
 	}
 
 	void LMC_EXPORTS LMC_reset(unsigned int id)
 	{
-		if (id > 0 && id <= comms.size())
+		IteratorTy it;
+		if (it = comms.find(id); it != comms.end())
 		{
-			comms[id - 1]->reset();
+			it->second->reset();
 		}
 	}
 
@@ -159,11 +169,11 @@ void ErrorHandler::error(void *ptr,const std::string& err)
 {
 	if (global_err_callback != nullptr)
 	{
-		for (int i = 0;i < comms.size();++i)
+		for (auto it : comms)
 		{
-			if (comms[i] == ptr)
+			if (it.second == ptr)
 			{
-				global_err_callback((unsigned int)i+1, err.c_str());
+				global_err_callback(it.first, err.c_str());
 				return;
 			}
 		}
